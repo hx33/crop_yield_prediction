@@ -1,0 +1,5 @@
+"0","cp = read.csv(""./HW3/Monthly_Data.csv"")"
+"0",""
+"0","corn_usa = cp[cp$Crop==""Corn"",]"
+"0","colnames(corn_usa)[4] = c(""Yield"")"
+"0","corn_usa$Yield = na.approx(corn_usa$Yield)"

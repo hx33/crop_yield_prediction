@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Time Series Project - Haiyu Xiao - ARMA/ARIMA/SARIMA Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Time Series Project - Haiyu Xiao</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html">
+ <span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./introduction.html">
+ <span class="menu-text">Introduction</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data_sources.html">
+ <span class="menu-text">Data Sources</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data_visualization.html">
+ <span class="menu-text">Data Visualization</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./eda.html">
+ <span class="menu-text">Exploratory Data Analysis</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-models" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Models</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-models">    
+        <li>
+    <a class="dropdown-item" href="./arma.html">
+ <span class="dropdown-text">ARMA/ARIMA/SARIMA Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./arimax.html">
+ <span class="dropdown-text">ARIMAX/SARIMAX/VAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./financial.html">
+ <span class="dropdown-text">Financial Time Series Models (ARCH/GARCH)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./deep_learning.html">
+ <span class="dropdown-text">Deep Learning for TS</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./conclusions.html">
+ <span class="menu-text">Conclusions</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#usa-wheat-yield-arima-model" id="toc-usa-wheat-yield-arima-model" class="nav-link active" data-scroll-target="#usa-wheat-yield-arima-model">USA Wheat Yield (ARIMA Model)</a>
+  <ul class="collapse">
+  <li><a href="#acf-pacf-plots" id="toc-acf-pacf-plots" class="nav-link" data-scroll-target="#acf-pacf-plots">ACF &amp; PACF plots</a></li>
+  <li><a href="#fit-arima-with-choices-of-parameters" id="toc-fit-arima-with-choices-of-parameters" class="nav-link" data-scroll-target="#fit-arima-with-choices-of-parameters">Fit ARIMA with choices of parameters</a></li>
+  <li><a href="#model-diagnostic" id="toc-model-diagnostic" class="nav-link" data-scroll-target="#model-diagnostic">Model Diagnostic</a></li>
+  <li><a href="#compare-with-auto.arima" id="toc-compare-with-auto.arima" class="nav-link" data-scroll-target="#compare-with-auto.arima">Compare with <code>auto.arima()</code></a></li>
+  <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting">Forecasting</a></li>
+  <li><a href="#compare-with-benchmark" id="toc-compare-with-benchmark" class="nav-link" data-scroll-target="#compare-with-benchmark">Compare with Benchmark</a></li>
+  </ul></li>
+  <li><a href="#usa-wheat-price-sarima-model" id="toc-usa-wheat-price-sarima-model" class="nav-link" data-scroll-target="#usa-wheat-price-sarima-model">USA Wheat Price (SARIMA Model)</a>
+  <ul class="collapse">
+  <li><a href="#check-for-stationarity" id="toc-check-for-stationarity" class="nav-link" data-scroll-target="#check-for-stationarity">Check for stationarity</a></li>
+  <li><a href="#look-for-the-best-model" id="toc-look-for-the-best-model" class="nav-link" data-scroll-target="#look-for-the-best-model">Look for the Best Model</a></li>
+  <li><a href="#forecasting-1" id="toc-forecasting-1" class="nav-link" data-scroll-target="#forecasting-1">Forecasting</a></li>
+  <li><a href="#compare-with-benchmark-1" id="toc-compare-with-benchmark-1" class="nav-link" data-scroll-target="#compare-with-benchmark-1">Compare with Benchmark</a></li>
+  <li><a href="#seasonal-cross-validation" id="toc-seasonal-cross-validation" class="nav-link" data-scroll-target="#seasonal-cross-validation">Seasonal Cross Validation</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ARMA/ARIMA/SARIMA Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<p>In this tab, I will focus on using these time series models, such as ARIMA (Auto-regressive integrated moving average) and SARIMA (Seasonal Auto-regressive Integrated Moving Average) to perform some forecasting on the crop production data</p>
+<section id="usa-wheat-yield-arima-model" class="level2">
+<h2 class="anchored" data-anchor-id="usa-wheat-yield-arima-model">USA Wheat Yield (ARIMA Model)</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cp <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"./HW3/Monthly_Data.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>wheat_usa <span class="ot">=</span> cp[cp<span class="sc">$</span>Crop<span class="sc">==</span><span class="st">"Wheat"</span>,]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(wheat_usa)[<span class="dv">4</span>] <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Yield"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>wheat_usa<span class="sc">$</span>Yield <span class="ot">=</span> <span class="fu">na.approx</span>(wheat_usa<span class="sc">$</span>Yield)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>corn_usa <span class="ot">=</span> cp[cp<span class="sc">$</span>Crop<span class="sc">==</span><span class="st">"Corn"</span>,]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(corn_usa)[<span class="dv">4</span>] <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Yield"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>corn_usa<span class="sc">$</span>Yield <span class="ot">=</span> <span class="fu">na.approx</span>(corn_usa<span class="sc">$</span>Yield)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">2002</span>, <span class="dv">8</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>wheat_ts <span class="ot">=</span> <span class="fu">ts</span>(wheat_usa<span class="sc">$</span>Yield, <span class="at">start=</span>start_date, <span class="at">frequency=</span><span class="dv">12</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>corn_ts <span class="ot">=</span> <span class="fu">ts</span>(corn_usa<span class="sc">$</span>Yield, <span class="at">start=</span>start_date, <span class="at">frequency=</span><span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>From the exploratory data analysis part, there is some important information on the wheat yield data so it will be used in the ARIMA model experiment.</p>
+<p>At the <a href="./eda.html">step</a> where I plot the ACF and PACF plots, and where I performed the Augmented Dickey-Fuller Test, it is shown that the original time series is stationary. But to get rid of any of the seasonality, I will try doing one differencing on the time series.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>diff_ts <span class="ot">=</span> <span class="fu">diff</span>(wheat_ts)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(diff_ts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Augmented Dickey-Fuller Test
+
+data:  diff_ts
+Dickey-Fuller = -6.1309, Lag order = 6, p-value = 0.01
+alternative hypothesis: stationary</code></pre>
+</div>
+</div>
+<p>Again, the Augmented Dickey-Fuller Test (ADF test) can confirm that the time series after differencing is clearly stationary with p-value=0.01.</p>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section"></h4>
+</section>
+<section id="acf-pacf-plots" class="level3">
+<h3 class="anchored" data-anchor-id="acf-pacf-plots">ACF &amp; PACF plots</h3>
+<p>First, plot the ACF and PACF plots and decide the order of the AR(p) and MA(q) processes in the ARIMA(p,d,q) model.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggAcf</span>(diff_ts) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"ACF of Monthly Wheat Production in USA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggPacf</span>(diff_ts) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"PACF of Monthly Wheat Production in USA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Then, from the ACF and PACF graphs, I will choose a set of values for the parameters: p=(0:1) and q=(0:4). Since I did one differencing to the time series, d=1 in this case.</p>
+<section id="section-1" class="level4">
+<h4 class="anchored" data-anchor-id="section-1"></h4>
+</section>
+</section>
+<section id="fit-arima-with-choices-of-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="fit-arima-with-choices-of-parameters">Fit ARIMA with choices of parameters</h3>
+<p>Then, I will fit my choice of ARIMA(p,d,q) to the data, and select the model with lowest AIC, BIC.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">5</span><span class="sc">*</span><span class="dv">10</span>), <span class="at">nrow=</span><span class="dv">10</span>, <span class="at">ncol=</span><span class="dv">5</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>d<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (p <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>){</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (q <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">4</span>){</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">=</span> <span class="fu">Arima</span>(wheat_ts, <span class="at">order=</span><span class="fu">c</span>(p,d,q), <span class="at">include.drift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    scores[p<span class="sc">*</span><span class="dv">5</span><span class="sc">+</span>q<span class="sc">+</span><span class="dv">1</span>,] <span class="ot">=</span> <span class="fu">c</span>(p,q,model<span class="sc">$</span>aic, model<span class="sc">$</span>bic, model<span class="sc">$</span>aicc)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">=</span> <span class="fu">as.data.frame</span>(scores)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scores) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"q"</span>,<span class="st">"AIC"</span>,<span class="st">"BIC"</span>,<span class="st">"AICC"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(scores, <span class="at">format=</span><span class="st">"pipe"</span>, <span class="at">padding=</span><span class="dv">30</span>, <span class="at">digits=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">q</th>
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">BIC</th>
+<th style="text-align: right;">AICC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-679.11</td>
+<td style="text-align: right;">-672.11</td>
+<td style="text-align: right;">-679.06</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-686.67</td>
+<td style="text-align: right;">-676.18</td>
+<td style="text-align: right;">-686.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-686.04</td>
+<td style="text-align: right;">-672.05</td>
+<td style="text-align: right;">-685.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">-685.74</td>
+<td style="text-align: right;">-668.25</td>
+<td style="text-align: right;">-685.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">-683.87</td>
+<td style="text-align: right;">-662.89</td>
+<td style="text-align: right;">-683.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-687.41</td>
+<td style="text-align: right;">-676.92</td>
+<td style="text-align: right;">-687.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-685.41</td>
+<td style="text-align: right;">-671.42</td>
+<td style="text-align: right;">-685.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">-685.48</td>
+<td style="text-align: right;">-668.00</td>
+<td style="text-align: right;">-685.23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">-683.87</td>
+<td style="text-align: right;">-662.89</td>
+<td style="text-align: right;">-683.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">-681.87</td>
+<td style="text-align: right;">-657.39</td>
+<td style="text-align: right;">-681.39</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the results of the AIC and BIC scores, I can determine that the model with the lowest AIC, BIC has parameters p=1, q=0. Therefore, the model will be ARIMA(1,1,0).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit10 <span class="ot">=</span> <span class="fu">Arima</span>(wheat_ts, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>), <span class="at">include.drift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: wheat_ts 
+ARIMA(1,1,0) with drift 
+
+Coefficients:
+         ar1   drift
+      0.2029  0.0031
+s.e.  0.0625  0.0047
+
+sigma^2 = 0.003442:  log likelihood = 346.71
+AIC=-687.41   AICc=-687.31   BIC=-676.92
+
+Training set error measures:
+                       ME       RMSE       MAE          MPE     MAPE      MASE
+Training set 8.570452e-06 0.05830938 0.0328281 -0.006918382 1.102147 0.1870143
+                     ACF1
+Training set 0.0004080243</code></pre>
+</div>
+</div>
+<p>Then, the equation of this model is:</p>
+<p><span class="math display">\[
+(X_t-0.203X_{t-1}=w_t)
+\]</span></p>
+<section id="section-2" class="level4">
+<h4 class="anchored" data-anchor-id="section-2"></h4>
+</section>
+</section>
+<section id="model-diagnostic" class="level3">
+<h3 class="anchored" data-anchor-id="model-diagnostic">Model Diagnostic</h3>
+<p>This part contains some technique overview and diagnostic about this model. I will use some plots to describe about the residuals.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model_output <span class="ot">&lt;-</span> <span class="fu">capture.output</span>(<span class="fu">sarima</span>(wheat_ts,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(fit10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(1,1,0) with drift
+Q* = 27.624, df = 23, p-value = 0.2303
+
+Model df: 1.   Total lags used: 24</code></pre>
+</div>
+</div>
+<p>Here is the result of checking residual of the ARIMA(1,1,0) model. From the Ljung-Box test, the residuals should be independent according to a p-value larger than 0.05, and this means the model fits the time series well. From the Q-Q plot we can also see basically the residuals form a normal distribution.</p>
+<section id="section-3" class="level4">
+<h4 class="anchored" data-anchor-id="section-3"></h4>
+</section>
+</section>
+<section id="compare-with-auto.arima" class="level3">
+<h3 class="anchored" data-anchor-id="compare-with-auto.arima">Compare with <code>auto.arima()</code></h3>
+<p>To test if my model agrees with the best model chosen by the auto process, I will try to use a `auto.arima()` function for testing.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">auto.arima</span>(wheat_ts, <span class="at">seasonal=</span><span class="cn">FALSE</span>, <span class="at">ic =</span> <span class="st">"aic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: wheat_ts 
+ARIMA(0,1,1) 
+
+Coefficients:
+         ma1
+      0.1876
+s.e.  0.0577
+
+sigma^2 = 0.003445:  log likelihood = 346.1
+AIC=-688.2   AICc=-688.15   BIC=-681.2</code></pre>
+</div>
+</div>
+<p>Apparently the result is different from my chosen model, and the AIC and BIC of the auto result is also larger. This may be because the `auto.arima` function does not search through enough possible parameters to find the model with the best statistics.</p>
+<section id="section-4" class="level4">
+<h4 class="anchored" data-anchor-id="section-4"></h4>
+</section>
+</section>
+<section id="forecasting" class="level3">
+<h3 class="anchored" data-anchor-id="forecasting">Forecasting</h3>
+<p>Now having my optimal model I can forecast using it with a confidence band. I will then plot the forecasts.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">=</span> <span class="fu">forecast</span>(fit10, <span class="dv">24</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>pred_ts <span class="ot">=</span> <span class="fu">ts</span>(pred<span class="sc">$</span>mean, <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2023</span>,<span class="dv">1</span>), <span class="at">frequency=</span><span class="dv">12</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ts.plot</span>(wheat_ts, pred_ts, <span class="at">gpars =</span> <span class="fu">list</span>(<span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The forecasting result of 2 years show that there will be a steady increase in the yield of wheat, which follows the general trend of the data, however the actual yield might not look as simple.</p>
+<section id="section-5" class="level4">
+<h4 class="anchored" data-anchor-id="section-5"></h4>
+</section>
+</section>
+<section id="compare-with-benchmark" class="level3">
+<h3 class="anchored" data-anchor-id="compare-with-benchmark">Compare with Benchmark</h3>
+<p>Here, I will compare my optimal ARIMA model with other benchmark methods such as mean, naive, snaive and drift, using MAE and RMSE.</p>
+<p>I plan to do this with training and testing sets, where I can train the different models and methods on the training set, and the RMSE of the models on the testing set can be reported and compared.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train_ts <span class="ot">=</span> <span class="fu">ts</span>(wheat_usa<span class="sc">$</span>Yield[<span class="dv">1</span><span class="sc">:</span><span class="dv">196</span>], <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2002</span>, <span class="dv">8</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>test_ts <span class="ot">=</span> <span class="fu">ts</span>(wheat_usa<span class="sc">$</span>Yield[<span class="dv">197</span><span class="sc">:</span><span class="dv">245</span>], <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2018</span>, <span class="dv">12</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>arima_train <span class="ot">=</span> <span class="fu">Arima</span>(train_ts, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>), <span class="at">include.drift =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>arima_pred <span class="ot">=</span> <span class="fu">forecast</span>(arima_train,<span class="dv">49</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>arima_res <span class="ot">=</span> arima_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>mean_pred <span class="ot">=</span> <span class="fu">meanf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>mean_res <span class="ot">=</span> mean_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>naive_pred <span class="ot">=</span> <span class="fu">naive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>naive_res <span class="ot">=</span> naive_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>snaive_pred <span class="ot">=</span> <span class="fu">snaive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>snaive_res <span class="ot">=</span> snaive_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>drift_pred <span class="ot">=</span> <span class="fu">rwf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>, <span class="at">drift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>drift_res <span class="ot">=</span> drift_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>arima_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(arima_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mean_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(mean_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>naive_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(naive_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>snaive_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(snaive_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>drift_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(drift_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">methods=</span><span class="fu">c</span>(<span class="st">"ARIMA"</span>, <span class="st">"Mean"</span>, <span class="st">"Naive"</span>, <span class="st">"Snaive"</span>, <span class="st">"Drift"</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE=</span><span class="fu">c</span>(arima_rmse, mean_rmse, naive_rmse, snaive_rmse, drift_rmse)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(comparison, <span class="at">format=</span><span class="st">"pipe"</span>, <span class="at">padding=</span><span class="dv">30</span>, <span class="at">digits=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">methods</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ARIMA</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mean</td>
+<td style="text-align: right;">0.34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Naive</td>
+<td style="text-align: right;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Snaive</td>
+<td style="text-align: right;">0.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Drift</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Based on the result of the comparison, the RMSE of the optimal ARIMA model is much less than the mean method, the same as the Drift method, but a little larger than Naive and Snaive method. The numbers here show that the ARIMA model has a decent performance on the wheat production time series.</p>
+<p>Then, I will compare the forcasts results using a plot.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(train_ts) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">meanf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Mean"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">naive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Naïve"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">snaive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"SNaïve"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">rwf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>, <span class="at">drift=</span><span class="cn">TRUE</span>),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Drift"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">forecast</span>(arima_train, <span class="dv">49</span>), </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"ARIMA"</span>,<span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">"Forecast"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It seems that the ARIMA(1,1,0) model gives a forecast that is simple and basically follows the previous trend, and is basically the same as the forecast of the drift method. Except for mean method which is far off, the other methods give relatively reliable forecasts.</p>
+<section id="section-6" class="level4">
+<h4 class="anchored" data-anchor-id="section-6"></h4>
+</section>
+</section>
+</section>
+<section id="usa-wheat-price-sarima-model" class="level2">
+<h2 class="anchored" data-anchor-id="usa-wheat-price-sarima-model">USA Wheat Price (SARIMA Model)</h2>
+<p>At this step I will move on to another focus of this project, the price of the wheat in the United States. First, look at the plot and the decompose of the wheat price time series:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>usa_wheat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"./HW4/USA_Wheat.csv"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>usa_wheat<span class="sc">$</span>Price <span class="ot">=</span> <span class="fu">na.approx</span>(usa_wheat<span class="sc">$</span>Price)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">2002</span>, <span class="dv">8</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>price_ts <span class="ot">=</span> <span class="fu">ts</span>(usa_wheat<span class="sc">$</span>Price, <span class="at">start=</span>start_date, <span class="at">frequency=</span><span class="dv">12</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(price_ts)<span class="sc">+</span><span class="fu">xlab</span>(<span class="st">"Date"</span>)<span class="sc">+</span><span class="fu">ylab</span>(<span class="st">"Price"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(<span class="fu">decompose</span>(price_ts, <span class="st">"additive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It looks like the trend of the wheat price is not clear through out the years, and the seasonality is obvious.</p>
+<section id="section-7" class="level4">
+<h4 class="anchored" data-anchor-id="section-7"></h4>
+</section>
+<section id="check-for-stationarity" class="level3">
+<h3 class="anchored" data-anchor-id="check-for-stationarity">Check for stationarity</h3>
+<p>To check the seasonal component and the stationarity, I will use a ACF graph and a test:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggAcf</span>(price_ts,<span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tseries<span class="sc">::</span><span class="fu">adf.test</span>(price_ts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Augmented Dickey-Fuller Test
+
+data:  price_ts
+Dickey-Fuller = -2.8178, Lag order = 6, p-value = 0.2317
+alternative hypothesis: stationary</code></pre>
+</div>
+</div>
+<p>It looks like the time series may have seasonal affect, and is definitely not stationary. Therefore, I will do a seasonal difference in addition to a general differencing to the time series.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>price_ts <span class="sc">%&gt;%</span> <span class="fu">diff</span>(<span class="at">lag=</span><span class="dv">12</span>) <span class="sc">%&gt;%</span> <span class="fu">diff</span>() <span class="sc">%&gt;%</span> <span class="fu">ggtsdisplay</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="section-8" class="level4">
+<h4 class="anchored" data-anchor-id="section-8"></h4>
+</section>
+</section>
+<section id="look-for-the-best-model" class="level3">
+<h3 class="anchored" data-anchor-id="look-for-the-best-model">Look for the Best Model</h3>
+<p>Based on the ACF and the PACF plots, it can be inferred that d=1, D=1, p=[0,1,2], q=[0,1,2], P=[1,2], Q=[1,2]. Then, I will fit my choice of SARIMA(p,d,q,P,D,Q) to the data, and select the model with lowest AIC, BIC.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">9</span><span class="sc">*</span><span class="dv">36</span>), <span class="at">nrow=</span><span class="dv">36</span>, <span class="at">ncol=</span><span class="dv">9</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>d<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>D<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>i<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (p <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>){</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (q <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>){</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (P <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>){</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (Q <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) {</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        model <span class="ot">=</span> <span class="fu">sarima</span>(price_ts,p,d,q,P,D,Q,<span class="at">S=</span><span class="dv">12</span>,<span class="at">details=</span><span class="cn">FALSE</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        scores[i,] <span class="ot">=</span> <span class="fu">c</span>(p,d,q,P,D,Q,model<span class="sc">$</span>AIC,model<span class="sc">$</span>BIC,model<span class="sc">$</span>AICc)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        i <span class="ot">=</span> i<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">=</span> <span class="fu">as.data.frame</span>(scores)</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scores) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"p"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>,<span class="st">"P"</span>,<span class="st">"D"</span>,<span class="st">"Q"</span>,<span class="st">"AIC"</span>,<span class="st">"BIC"</span>,<span class="st">"AICC"</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(scores, <span class="at">format=</span><span class="st">"pipe"</span>, <span class="at">padding=</span><span class="dv">30</span>, <span class="at">digits=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">d</th>
+<th style="text-align: right;">q</th>
+<th style="text-align: right;">P</th>
+<th style="text-align: right;">D</th>
+<th style="text-align: right;">Q</th>
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">BIC</th>
+<th style="text-align: right;">AICC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.82</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.83</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">0.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">0.83</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.68</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.81</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.69</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the results of the scores, it can be determined that the best model would be SARIMA(0,1,2,1,1,1).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit012 <span class="ot">=</span> <span class="fu">Arima</span>(price_ts, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">seasonal=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit012)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: price_ts 
+ARIMA(0,1,2)(1,1,1)[12] 
+
+Coefficients:
+         ma1     ma2     sar1    sma1
+      0.4220  0.1230  -0.0710  -1.000
+s.e.  0.0676  0.0713   0.0713   0.069
+
+sigma^2 = 0.09584:  log likelihood = -74.13
+AIC=158.26   AICc=158.52   BIC=175.49
+
+Training set error measures:
+                      ME      RMSE       MAE        MPE     MAPE      MASE
+Training set 0.004072782 0.2986528 0.1958307 0.02357084 3.312105 0.1574702
+                    ACF1
+Training set -0.00670955</code></pre>
+</div>
+</div>
+<section id="section-9" class="level4">
+<h4 class="anchored" data-anchor-id="section-9"></h4>
+</section>
+</section>
+<section id="forecasting-1" class="level3">
+<h3 class="anchored" data-anchor-id="forecasting-1">Forecasting</h3>
+<p>Having the optimal SARIMA model, I can forecast the price of wheat for the next two years.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sarima.for</span>(price_ts,<span class="dv">24</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pred
+          Jan      Feb      Mar      Apr      May      Jun      Jul      Aug
+2023 8.950891 9.058484 9.074394 9.041436 8.962985 8.766962 8.702220 8.872337
+2024 9.183499 9.346926 9.416358 9.404903 9.381704 9.103776 8.982589 9.130696
+          Sep      Oct      Nov      Dec
+2023 8.955317 9.052678 9.129206 9.145295
+2024 9.229079 9.345081 9.412628 9.414799
+
+$se
+           Jan       Feb       Mar       Apr       May       Jun       Jul
+2023 0.3145333 0.5467826 0.7315215 0.8782234 1.0037075 1.1151598 1.2164421
+2024 1.6990807 1.7642477 1.8268598 1.8873960 1.9460499 2.0029870 2.0583297
+           Aug       Sep       Oct       Nov       Dec
+2023 1.3098930 1.3969359 1.4788645 1.5564865 1.6304173
+2024 2.1121452 2.1643771 2.2153779 2.2652308 2.3140098</code></pre>
+</div>
+</div>
+<p>From the forecast, it seems that the future prices are stable, however the confidence band seems to be large.</p>
+<section id="section-10" class="level4">
+<h4 class="anchored" data-anchor-id="section-10"></h4>
+</section>
+</section>
+<section id="compare-with-benchmark-1" class="level3">
+<h3 class="anchored" data-anchor-id="compare-with-benchmark-1">Compare with Benchmark</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>train_ts <span class="ot">=</span> <span class="fu">ts</span>(usa_wheat<span class="sc">$</span>Price[<span class="dv">1</span><span class="sc">:</span><span class="dv">196</span>], <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2002</span>, <span class="dv">8</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>test_ts <span class="ot">=</span> <span class="fu">ts</span>(usa_wheat<span class="sc">$</span>Price[<span class="dv">197</span><span class="sc">:</span><span class="dv">245</span>], <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2018</span>, <span class="dv">12</span>), <span class="at">frequency =</span> <span class="dv">12</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>sarima_pred <span class="ot">=</span> <span class="fu">sarima.for</span>(train_ts,<span class="dv">49</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>,<span class="at">plot=</span><span class="cn">FALSE</span>)<span class="sc">$</span>pred</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>sarima_res <span class="ot">=</span> sarima_pred<span class="sc">-</span>test_ts</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>mean_pred <span class="ot">=</span> <span class="fu">meanf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>mean_res <span class="ot">=</span> mean_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>naive_pred <span class="ot">=</span> <span class="fu">naive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>naive_res <span class="ot">=</span> naive_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>snaive_pred <span class="ot">=</span> <span class="fu">snaive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>snaive_res <span class="ot">=</span> snaive_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>drift_pred <span class="ot">=</span> <span class="fu">rwf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>, <span class="at">drift=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>drift_res <span class="ot">=</span> drift_pred<span class="sc">$</span>mean<span class="sc">-</span>test_ts</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>sarima_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(sarima_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>mean_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(mean_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>naive_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(naive_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>snaive_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(snaive_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>drift_rmse <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(drift_res<span class="sc">**</span><span class="dv">2</span>))</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">methods=</span><span class="fu">c</span>(<span class="st">"SARIMA"</span>, <span class="st">"Mean"</span>, <span class="st">"Naive"</span>, <span class="st">"Snaive"</span>, <span class="st">"Drift"</span>),</span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE=</span><span class="fu">c</span>(sarima_rmse, mean_rmse, naive_rmse, snaive_rmse, drift_rmse)</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(comparison, <span class="at">format=</span><span class="st">"pipe"</span>, <span class="at">padding=</span><span class="dv">30</span>, <span class="at">digits=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">methods</th>
+<th style="text-align: right;">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SARIMA</td>
+<td style="text-align: right;">2.11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mean</td>
+<td style="text-align: right;">2.22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Naive</td>
+<td style="text-align: right;">2.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Snaive</td>
+<td style="text-align: right;">2.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Drift</td>
+<td style="text-align: right;">2.10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the numbers, the optimal SARIMA model has smaller RMSE than every benchmark methods except for drift method, meaning that it is performing really well on the wheat price time series.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(train_ts) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">meanf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Mean"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">naive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Naïve"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">snaive</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"SNaïve"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(<span class="fu">rwf</span>(train_ts, <span class="at">h=</span><span class="dv">49</span>, <span class="at">drift=</span><span class="cn">TRUE</span>),</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"Drift"</span>, <span class="at">PI=</span><span class="cn">FALSE</span>)<span class="sc">+</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(sarima_pred, </span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">series=</span><span class="st">"SARIMA"</span>,<span class="at">PI=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="st">"Forecast"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="arma_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It seems that compared to the SARIMA(0,1,2,1,1,1) model the SNaive method’s forecast is similar in shape, while the other three methods create simpler forecasts.</p>
+<section id="section-11" class="level4">
+<h4 class="anchored" data-anchor-id="section-11"></h4>
+</section>
+</section>
+<section id="seasonal-cross-validation" class="level3">
+<h3 class="anchored" data-anchor-id="seasonal-cross-validation">Seasonal Cross Validation</h3>
+<p>For this step, I will perform a seasonal cross validation on the model, first with 1 step ahead forecasts and then 12 (the seasonal period of the time series) step ahead forecast.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">140</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>farima1 <span class="ot">=</span> <span class="cf">function</span>(x, h){<span class="fu">forecast</span>(<span class="fu">Arima</span>(x, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)), <span class="at">h=</span>h)}</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>e1 <span class="ot">=</span> <span class="fu">tsCV</span>(price_ts, farima1, <span class="at">h=</span><span class="dv">1</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>RMSE1 <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e1<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(RMSE1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3747683</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>farima12 <span class="ot">=</span> <span class="cf">function</span>(x, h){<span class="fu">forecast</span>(<span class="fu">Arima</span>(x, <span class="at">order=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>),<span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)), <span class="at">h=</span>h)}</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>e12 <span class="ot">=</span> <span class="fu">tsCV</span>(price_ts, farima12, <span class="at">h=</span><span class="dv">12</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>RMSE12 <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(e12<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(RMSE12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.467905</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(fit012))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: price_ts 
+ARIMA(0,1,2)(1,1,1)[12] 
+
+Coefficients:
+         ma1     ma2     sar1    sma1
+      0.4220  0.1230  -0.0710  -1.000
+s.e.  0.0676  0.0713   0.0713   0.069
+
+sigma^2 = 0.09584:  log likelihood = -74.13
+AIC=158.26   AICc=158.52   BIC=175.49
+
+Training set error measures:
+                      ME      RMSE       MAE        MPE     MAPE      MASE
+Training set 0.004072782 0.2986528 0.1958307 0.02357084 3.312105 0.1574702
+                    ACF1
+Training set -0.00670955</code></pre>
+</div>
+</div>
+<p>The 12 steps ahead forecasting works by first using a part of the data as training set (1st,2nd,…,kth), and then using the (k+12)th observation as the validation. For the next iteration, the training set will then include the (k+1)th observation, where the validation set will be the (k+13)th observation. This procedure is repeated through the whole data set.</p>
+<p>From the results above, we can see that the forecasts using 1 step ahead have smaller RMSE than using 12 steps ahead, while the original model has the lowest RMSE.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

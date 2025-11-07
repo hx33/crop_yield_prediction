@@ -1,0 +1,1 @@
+"0","head(cp_usa[cp_usa$SUBJECT==""WHEAT"",])"

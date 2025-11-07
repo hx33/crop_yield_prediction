@@ -1,0 +1,31 @@
+---
+title: "Data Sources"
+---
+
+A number of data were gathered using different sources for this project. I searched websites like data.world and ICPSR, and gathered data sets from OECD, USDA etc. for the crops production and price data.
+
+#### 
+
+### OECD - Crop Production Data
+
+Organisation for Economic Co-operation and Development is an intergovernmental organization founded to observe and stimulate economic progress. They own lots of data sets recording all sorts of indices related to economics, ranging from adults education level to greenhouse gas emissions. I found this nice time series data set that documents the yields of different crops from many countries, which is suitable for predicting yields of each type of crops.
+
+The data can be downloaded [here](../files/560_datasets/crop_production.csv). Yields values are measured in tonnes per hectare.
+
+The source of the data can be viewed [here](https://data.world/oecd/crop-production/).
+
+#### 
+
+### USDA - Wheat Data
+
+U.S. DEPARTMENT OF AGRICULTURE is providing services and resources for economic research on agriculture, and the wheat data on their website is very useful for the project. There are multiple data sets used, such as the price of wheat received by farmers and the import and export quantities. These variables are very suitable for time series analysis.
+
+The data can be downloaded [here](../files/560_datasets/Wheat Data-All Years.xlsx).
+
+The source of the data can be viewed [here](https://www.ers.usda.gov/data-products/wheat-data/).
+
+#### 
+
+### Yahoo Finance - Wheat Stocks
+
+Wheat farming takes up more land than almost any other commodity on a global scale. Because of the volume of grain produced each year, numerous businesses make a living by growing, transporting, or selling it. Stocks related to wheat production and price can be useful for studying financial time series of wheat. [Source](https://ca.finance.yahoo.com/news/3-top-wheat-stocks-buy-090000987.html)

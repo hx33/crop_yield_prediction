@@ -1,0 +1,59 @@
+{
+  "index.qmd": {
+    "index.html": "060e13ab"
+  },
+  "about.qmd": {
+    "about.html": "2acbfa61"
+  },
+  "Introduction.qmd": {
+    "Introduction.html": "aaaaea81"
+  },
+  "data_sources.qmd": {
+    "data_sources.html": "11819d97"
+  },
+  "introduction.qmd": {
+    "introduction.html": "57110e40"
+  },
+  "arma.qmd": {
+    "arma.html": "1b2c3ff4"
+  },
+  "conclusions.qmd": {
+    "conclusions.html": "c0145c31"
+  },
+  "deeplearning.qmd": {
+    "deeplearning.html": "1f19a51d"
+  },
+  "eda.qmd": {
+    "eda.html": "f7621905"
+  },
+  "financial.qmd": {
+    "financial.html": "a9bce90d"
+  },
+  "sources.qmd": {
+    "sources.html": "4b0312a9"
+  },
+  "visualization.qmd": {
+    "visualization.html": "63ccfcf0"
+  },
+  "dv.qmd": {
+    "dv.html": "bbf064d3"
+  },
+  "dl.qmd": {
+    "dl.html": "c388ca9d"
+  },
+  "ds.qmd": {
+    "ds.html": "d741154f"
+  },
+  "data_visualization.qmd": {
+    "data_visualization.html": "6338931c"
+  },
+  "deep_learning.qmd": {
+    "deep_learning.html": "18eafb95"
+  },
+  "spectral.qmd": {
+    "spectral.html": "6e32f719"
+  },
+  "arimax.qmd": {
+    "arimax.html": "144e8898"
+  }
+}

@@ -1,0 +1,13 @@
+---
+title: "About Haiyu Xiao"
+---
+
+![](./lab0/Me.JPG)
+
+Hello, I am Haiyu Xiao, a graduate student of data science and analytics program at Georgetown University. I went to University of Washington in Seattle during undergraduate, and I was studying applied mathematics. Seattle was a very beautiful city with a lot of place of interests, but I think Washington DC is just as cool. Since I got into my major during undergraduate, I have been learning about using math tools to solve problems in real life, and after joining the DSAN program here my professional interest had become even clearer: using different methods to find useful information from all sorts of data. This is also my basic definition of data science, as this modern world is creating large amount of data everyday, and these messy numbers are super beneficial as long as we use the right tools and procedures to make good use of them!
+
+This time series project is designed to perform analyses on a topic by using multiple relevant models on time series data, so that it not only contributes to this specific topic, but it also represents what I learned from this class.
+
+### Contact Me
+
+hx111\@georgetown.edu

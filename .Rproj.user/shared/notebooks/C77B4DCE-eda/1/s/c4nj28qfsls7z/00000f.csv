@@ -1,0 +1,3 @@
+"0","decom_wheat = decompose(wheat_ts)"
+"0","autoplot(decom_wheat)+ggtitle(""Decomposition of Wheat Production of USA"")+"
+"0","  labs(x = ""Time"")"

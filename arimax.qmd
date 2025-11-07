@@ -1,0 +1,238 @@
+---
+title: "ARIMAX/SARIMAX/VAR"
+---
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(tidyverse)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+library(dplyr)
+```
+
+This tab will focus on fitting ARIMAX/SARIMAX model or VAR/VARMA model to find the relationships between the time series variables.
+
+Therefore, this part mainly answers the question how the measures of wheat affect the price of wheat (dollars per bushel) in USA. These measures include the yield (tonnes per hectare), and the amount of food use (bushels). These variables record the situation of wheat production and usage, therefore will have impacts on the price of wheat in USA.
+
+#### 
+
+### The Variables
+
+First, read the data set, then make a plot of the time series predictors:
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+wheat = read.csv("./HW4/USA_Wheat.csv", sep=",")
+wheat = wheat[,c(1,3,4,5,6,7)]
+wheat$Yield = na.approx(wheat$Yield)
+wheat$Food_Use = as.numeric(gsub(",", "", wheat$Food_Use))
+# wheat$Import = as.numeric(gsub(",", "", wheat$Import))
+# wheat$Export = as.numeric(gsub(",", "", wheat$Export))
+
+start_date = c(2002, 8)
+wheat_ts = ts(wheat, start=start_date, frequency=12)
+
+autoplot(wheat_ts[,c(3,2,4)], facets=TRUE)+
+  xlab("Time")+ylab("")+ggtitle("Time Series Plots of the Variables")
+```
+
+In order to put the data on a better scale, I will do a log transformation:
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+lg.wheat = wheat
+lg.wheat$Price = log(wheat$Price)
+lg.wheat$Yield = log(wheat$Yield)
+lg.wheat$Food_Use = log(wheat$Food_Use)
+# lg.wheat$Import = log(wheat$Import)
+# lg.wheat$Export = log(wheat$Export)
+
+wheat_ts = ts(lg.wheat, start=start_date, frequency=12)
+
+autoplot(wheat_ts[,c(3,2,4)], facets=TRUE)+
+  xlab("Time")+ylab("")+ggtitle("Time Series Plots of the Variables")
+```
+
+We can see that the time series all have a increasing trend, while there is obvious seasonality for the amount of food use.
+
+#### 
+
+### Fitting the Model Using \`auto.arima\`
+
+First, this function will be used to fit the ARIMAX model, and the exogenous (predictor) variables are Yield and Food_Use.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+xreg = cbind(yield = wheat_ts[,"Yield"],
+             food = wheat_ts[,"Food_Use"])
+fit_auto = auto.arima(wheat_ts[,"Price"], xreg=xreg)
+summary(fit_auto)
+checkresiduals(fit_auto)
+```
+
+From the summary, the \`auto.arima\` function creates a SARIMAX model, a regression model with ARIMA(0,1,2)(1,0,0)\[12\] errors. From the Ljung-Box test, the residuals should be independent according to a p-value larger than 0.05, and this means the model fits the time series well. From the Q-Q plot we can also see that basically the residuals form a normal distribution.
+
+#### 
+
+### Fitting the Model Manually
+
+Having the linear regression model predicting wheat price using yield and food use, for the residuals I will fit an ARIMA/SARIMA model.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+tsdf = lg.wheat[,c(1:4)]
+tsdf$Yield = ts(tsdf$Yield, start=start_date, frequency=12)
+tsdf$Food_Use = ts(tsdf$Food_Use, start=start_date, frequency=12)
+tsdf$Price = ts(tsdf$Price, start=start_date, frequency=12)
+
+fit_reg = lm(Price~Yield+Food_Use, data=tsdf)
+# summary(fit_reg)
+fit_res = ts(residuals(fit_reg), start=start_date, frequency=12)
+```
+
+Look at the residuals:
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+acf(fit_res)
+Pacf(fit_res)
+```
+
+Looks like the residuals is heavily auto correlated and not stationary. So I will first try with a normal differencing:
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+fit_res %>% diff() %>% ggtsdisplay()
+```
+
+Still not good enough, therefore I will add a seasonal differencing:
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+fit_res %>% diff() %>% diff(12) %>% ggtsdisplay()
+```
+
+#### 
+
+### Finding the Model Parameters
+
+Based on the plots, I will choose a set of values for the parameters: d=D=1, p=\[1,2,3\], q=\[1,2,3\], P=\[1,2\], Q=\[1,2\].
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+SARIMA.c = function(ps,qs,Ps,Qs,df){
+  scores = matrix(rep(NA, 9*36), nrow=36, ncol=9)
+  d=1
+  D=1
+  s=12
+  
+  i=1
+  for (p in ps){
+    for (q in qs){
+      for (P in Ps){
+        for (Q in Qs){
+          model = Arima(df, order=c(p-1,d,q-1), seasonal=c(P-1,D,Q-1))
+          scores[i,] = c(p-1,d,q-1,P-1,D,Q-1,model$aic,model$bic,model$aicc)
+          i=i+1
+        }
+      }
+    }
+  }
+  
+  scores = as.data.frame(scores)
+  colnames(scores) = c("p","d","q","P","D","Q","AIC","BIC","AICc")
+  scores
+}
+
+output = SARIMA.c(ps=c(1,2,3), qs=c(1,2,3), Ps=c(1,2), Qs=c(1,2), df=fit_res)
+output
+```
+
+It is obvious that the best model here is ARIMA(1,1,0)(0,1,1)\[12\], while \`auto.arima\` suggested ARIMA(0,1,2)(1,0,0)\[12\].
+
+Let's do some model diagnosis about this model.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+set.seed(140)
+model_output110 = capture.output(sarima(fit_res,1,1,0,0,1,1,12))
+cat(model_output110[23:52], model_output110[length(model_output110)], sep="\n")
+```
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+model_output012 = capture.output(sarima(fit_res,0,1,2,1,0,0,12))
+cat(model_output012[20:50], model_output012[length(model_output110)], sep="\n")
+```
+
+#### 
+
+### Use CV to Find the Best Model
+
+Since the two models above do not have much advantage over each other, in this step cross validation will be used to look for the optimal model, with RMSE plots.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+n = length(fit_res)
+k = 65
+
+rmse1 = rmse2 = matrix(NA,15,12)
+st = tsp(fit_res)[1]+(k-1)/12
+
+for (i in 1:15){
+  xtrain = window(fit_res, end=st+i-1)
+  xtest = window(fit_res, start=st+i-1+1/12, end=st+i)
+  
+  fit1 = Arima(xtrain, order=c(1,1,0), seasonal=list(order=c(0,1,1),period=12), 
+               include.drift=TRUE, method="ML")
+  fcast1 = forecast(fit1, h=12)
+  
+  fit2 = Arima(xtrain, order=c(0,1,2), seasonal=list(order=c(1,0,0),period=12), 
+               include.drift=TRUE, method="ML")
+  fcast2 = forecast(fit2, h=12)
+  
+  rmse1[i,1:length(xtest)] = sqrt((fcast1$mean-xtest)^2)
+  rmse2[i,1:length(xtest)] = sqrt((fcast2$mean-xtest)^2)
+}
+
+plot(1:12, colMeans(rmse1, na.rm=TRUE), type="l", col=2, xlab="Horizon", ylab="RMSE")
+lines(1:12, colMeans(rmse2, na.rm=TRUE), type="l", col=3)
+legend("topleft", legend=c("my fit", "auto fit"), col=2:3, lty=1)
+```
+
+Based on the result of the cross validation, my optimal fit ARIMA(1,1,0)(0,1,1)\[12\] is better since it has lower RMSE.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+xreg = cbind(yield = tsdf[,"Yield"],
+             food = tsdf[,"Food_Use"])
+fit = Arima(tsdf[,"Price"], order=c(1,1,0), seasonal=c(0,1,1), xreg=xreg)
+summary(fit)
+```
+
+From the summary of the fit, it can be determined that the equation of the model is:
+
+$$
+y_t = −0.2964x_{1,t}+0.0762x_{2,t}+u_t \\
+u_t = (1+0.3606B)(1−B^4)ε_t.
+$$
+
+#### 
+
+### Forecasting
+
+In order to forecast the price of wheat, I need to have forecasts of yield and the food use first. Then the obtained forecasts will be used to find the prediction of the price.
+
+```{r, echo=TRUE,message=FALSE,warning=FALSE}
+fit_yield = Arima(tsdf$Yield, order=c(1,1,0), seasonal=list(order=c(0,1,1),period=12))
+fyield = forecast(fit_yield, h=24)
+fit_food = Arima(tsdf$Food_Use, order=c(1,1,0), seasonal=list(order=c(0,1,1),period=12))
+ffood = forecast(fit_food, h=24)
+
+fxreg = cbind(Yield=fyield$mean, Food=ffood$mean)
+
+fcast = forecast(fit, xreg=fxreg)
+
+autoplot(fcast)+xlab("Time")+ylab("Price")
+```
+
+From the forecast plot, it seems that the prediction of the wheat price for the next two years follows the trend of the original time series, with a large confidence band. It seems that the result is not very nice.

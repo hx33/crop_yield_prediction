@@ -1,0 +1,89 @@
+---
+title: "Data Visuals in TS"
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(flipbookr)
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(tidyverse)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+```
+
+## Data Visualization with Stock Data
+
+This section visualizes the stock data of Google and Microsoft from 01/01/2020 to 12/01/2020.
+
+### Data set:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
+coms = c("GOOG","MSFT")
+for (i in coms){
+  getSymbols(i, from = "2020-01-01", to = "2022-12-01")}
+
+x = list(title="date")
+y = list(title="value")
+stock = data.frame(GOOG$GOOG.Adjusted, MSFT$MSFT.Adjusted)
+stock = data.frame(stock, rownames(stock))
+colnames(stock) = append(coms,'Dates')
+
+stock$date<-as.Date(stock$Dates,"%Y-%m-%d")
+stock <- stock[,-3]
+head(stock)
+```
+
+### Plot:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+g1 <- ggplot(stock, aes(x=date)) +
+  geom_line(aes(y=GOOG, colour="GOOG"))+
+  geom_line(aes(y=MSFT, colour="MSFT"))+
+  ggtitle("Stock Prices for two Tech Companies, From 2020 to 2022")+
+  theme(plot.title = element_text(size = 14))+
+  labs(x = "Date", y = "Adjusted Closing Prices")+
+  guides(colour=guide_legend(title="Tech Companies")) 
+
+ggplotly(g1) %>%
+  layout(hovermode = "x")
+```
+
+## Plot Climate Data
+
+For this part, I used the max and min temperature of each day at National Arboretum DC, MD US as the climate data. Time range was 01/01/2021 to 09/01/2021.
+
+### Data set:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+climate = read.csv("./lab0/climate.csv")
+climate$date = as.Date(climate$DATE,"%m/%d/%Y")
+nat = climate[climate$NAME == "NATIONAL ARBORETUM DC, MD US",c('NAME', 'TMAX', 'TMIN', 'date')]
+head(nat)
+```
+
+### Plot:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+g2 <- ggplot(nat, aes(x=date)) +
+  geom_line(aes(y=TMAX, colour="TMAX"))+
+  geom_line(aes(y=TMIN, colour="TMIN"))+
+  ggtitle("Max and Min Temperature for NATIONAL ARBORETUM DC, MD US")+
+  theme(plot.title = element_text(size = 12))+
+  labs(x = "Date", y = "Max/Min Temp")+
+  guides(colour=guide_legend(title="Max/Min")) 
+
+ggplotly(g2) %>%
+  layout(hovermode = "x")
+```

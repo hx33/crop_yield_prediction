@@ -1,0 +1,7 @@
+"0","garch_models = c(""garch(11)"", ""garch(12)"", ""garch(21)"", ""garch(22)"")"
+"0","garch_AIC = c(garch11@fit$ics[1],garch12@fit$ics[1],garch21@fit$ics[1], garch22@fit$ics[1])"
+"0","garch_BIC = c(garch11@fit$ics[2],garch12@fit$ics[2],garch21@fit$ics[2], garch22@fit$ics[2])"
+"0","garch_SIC = c(garch11@fit$ics[3],garch12@fit$ics[3],garch21@fit$ics[3], garch22@fit$ics[3])"
+"0",""
+"0","garchs = data.frame(garch_models, garch_AIC, garch_BIC, garch_SIC)"
+"0","garchs"

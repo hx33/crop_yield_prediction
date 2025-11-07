@@ -1,0 +1,8 @@
+"0","tsdf = lg.wheat[,c(1:4)]"
+"0","tsdf$Yield = ts(tsdf$Yield, start=start_date, frequency=12)"
+"0","tsdf$Food_Use = ts(tsdf$Food_Use, start=start_date, frequency=12)"
+"0","tsdf$Price = ts(tsdf$Price, start=start_date, frequency=12)"
+"0",""
+"0","fit_reg = lm(Price~Yield+Food_Use, data=tsdf)"
+"0","# summary(fit_reg)"
+"0","fit_res = ts(residuals(fit_reg), start=start_date, frequency=12)"

@@ -1,0 +1,3 @@
+"0","lag1 = gglagplot(wheat_ts, do.lines=FALSE, lags=4)+"
+"0","  xlab(""Lags"")+ylab(""Yi"")"
+"0","lag1"

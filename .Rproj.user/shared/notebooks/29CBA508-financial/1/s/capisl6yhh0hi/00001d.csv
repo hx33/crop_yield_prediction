@@ -1,0 +1,4 @@
+"0","BG_close = Ad(BG)"
+"0","returns = diff(log(BG_close))"
+"0","chartSeries(returns, theme=chartTheme(""white""), bar.type=""hlc"", "
+"0","            up.col=""green"", dn.col=""red"")"

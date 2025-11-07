@@ -1,0 +1,7 @@
+"0","cp_countries = cp[cp$MEASURE==""TONNE_HA"" & (cp$LOCATION %in% c(""CHN"",""IND"",""BRA"",""RUS"",""MEX"",""JPN"","""")), -c(2,4,5,8)]"
+"0","row.names(cp_countries) <- NULL"
+"0",""
+"0","fig3 = cp_countries %>%"
+"0","  plot_ly(x=~LOCATION, y=~Value, frame=~TIME, color=~SUBJECT, type=""bar"")"
+"0",""
+"0","fig3 %>% layout(title = ""Yield of the 4 Crops in Each Country Since 1990"", xaxis = list(title='Year', showgrid=F), yaxis = list(title='Yield', showgrid=F))"

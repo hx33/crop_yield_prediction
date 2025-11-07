@@ -1,0 +1,6 @@
+"0","aic_arch = sapply(arch_list, AIC)"
+"0","which(aic_arch==min(aic_arch))"
+"1","[1]"
+"1"," 3"
+"1","
+"

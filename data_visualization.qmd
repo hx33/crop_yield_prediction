@@ -1,0 +1,109 @@
+---
+title: "Data Visualization"
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# import pandas as pd
+# import numpy as np
+# import seaborn as sns
+# import matplotlib.pyplot as plt
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(flipbookr)
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(data.table)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(tidyverse)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+```
+
+## Crop Production Data
+
+For the crop production data, I will visualize this data by comparing the yields of different crops from one country over time, or I will also show how are the yields differ for some countries/regions. In this part I mainly use ggplot and plot-ly.
+
+### USA Crop Yields
+
+I choose United States from example to show how the yields of the crops differ through out the years.
+
+First, let's look at the original data of the yields (in tonnes per hectare):
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+cp = read.csv("./HW2/crop_production.csv")
+cp_usa = cp[cp$LOCATION=="USA" & cp$MEASURE=="TONNE_HA", -c(2,4,5,8)]
+row.names(cp_usa) <- NULL
+h1 = head(cp_usa[cp_usa$SUBJECT=="RICE",])
+h2 = head(cp_usa[cp_usa$SUBJECT=="WHEAT",])
+knitr::kable(list(h1,h2), format="pipe", padding=30, digits=2)
+```
+
+Obviously, the yields of rice are higher than wheat in the US. To discover the behaviors and find out whether there are any specific situations, I will plot the annual yields of the four types of crops in USA:
+
+```{r fig.align="center", fig.width = 10}
+g1 <- ggplot(data=NULL, aes(x=cp_usa$TIME[cp_usa$SUBJECT=="RICE"])) +
+  geom_line(aes(y=cp_usa$Value[cp_usa$SUBJECT=="RICE"], colour="RICE"))+
+  geom_line(aes(y=cp_usa$Value[cp_usa$SUBJECT=="WHEAT"], colour="WHEAT"))+
+  geom_line(aes(y=cp_usa$Value[cp_usa$SUBJECT=="SOYBEAN"], colour="SOYBEAN"))+
+  geom_line(aes(y=cp_usa$Value[cp_usa$SUBJECT=="MAIZE"], colour="MAIZE"))+
+  ggtitle("Annual Yields of the Four Crops in USA")+
+  theme(plot.title = element_text(size = 14))+
+  labs(x = "Year", y = "Production (Tons/Hectare)")+
+  guides(colour=guide_legend(title="Crops")) 
+
+ggplotly(g1) %>%
+  layout(hovermode = "x")
+```
+
+From 1990 to today, in the US the production of maize (corn) is always the highest, with rice being the second, and wheat and soybean being at the same level. All four crops' yields increased with different degrees, with maize's yield per hectare the most.
+
+The yield of maize had a drop during 2011-2012, however I can't find a specific reason for this while the best I can think of is the effect of economic crisis on agriculture.
+
+### Compare Among Countries
+
+I choose some of the most crop producing countries in the world, since I want to compare that for the different crops how are their yields differ over time.
+
+First, from the big crop production data frame I choose only the yields of the crops in the selected countries:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+cp_countries = cp[cp$MEASURE=="TONNE_HA" & (cp$LOCATION %in% c("USA","CHN","IND","BRA","RUS","MEX","JPN","")), -c(2,4,5,8)]
+row.names(cp_countries) <- NULL
+head(cp_countries)
+```
+
+Then, using plot-ly I create an animated bar plot of the yields, where the bars represent different crops.
+
+```{r fig.align="center", fig.width = 10}
+fig2 = cp_countries %>%
+  plot_ly(x=~LOCATION, y=~Value, frame=~TIME, color=~SUBJECT, type="bar")
+
+fig2 %>% layout(title = "Yield of the 4 Crops in Each Country Since 1990", xaxis = list(title='Year', showgrid=F), yaxis = list(title='Yield', showgrid=F))
+```
+
+Since yield data from USA is way too conspicuous here, I want to focus on the changes over time of the other countries.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+cp_countries = cp[cp$MEASURE=="TONNE_HA" & (cp$LOCATION %in% c("CHN","IND","BRA","RUS","MEX","JPN","")), -c(2,4,5,8)]
+row.names(cp_countries) <- NULL
+
+fig3 = cp_countries %>%
+  plot_ly(x=~LOCATION, y=~Value, frame=~TIME, color=~SUBJECT, type="bar")
+
+fig3 %>% layout(title = "Yield of the 4 Crops in Each Country Since 1990", xaxis = list(title='Year', showgrid=F), yaxis = list(title='Yield', showgrid=F))
+```
+
+Some key points that we can discover from the plot are:
+
+1.  The total yields of USA are way higher than any other countries, especially maize.
+2.  Almost every country had soybean as their least produced crop, but how much the other crops are produced each year basically match how the diet is like in that country.
+3.  From 1990 to the 2020s, the countries with the most increase in yields are: Brazil, China and USA; the countries with less are India, Japan, Mexico, with Russia had moderate grow. Particularly, the crops in Japan and Mexico basically increased less than 1 ton/hectare, while the other countries had more than that. This may be because that Japan and Mexico had lower economic growth since 1990 than others.

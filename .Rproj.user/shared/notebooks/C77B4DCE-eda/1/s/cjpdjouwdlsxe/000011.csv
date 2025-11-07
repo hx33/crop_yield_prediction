@@ -1,0 +1,4 @@
+"0","autoplot(corn_ts, series=""Monthly Data"")+"
+"0","  autolayer(ma(corn_ts, 12), series=""12-MA"")+"
+"0","  xlab(""Month"")+ylab(""Corn Yield"")+"
+"0","  scale_color_manual(values=c(""Monthly Data""=""grey50"", ""12-MA""=""red""), breaks=c(""Monthly Data"", ""12-MA""))"

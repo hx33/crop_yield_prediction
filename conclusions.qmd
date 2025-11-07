@@ -1,0 +1,23 @@
+---
+title: "Conclusions"
+---
+
+To conclude this time series project, let's first see a diagram of the workflow of the data story:
+
+![](./External_Images/diagram.png)
+
+## Data Story
+
+Started from gathering data, then performing visualizations and exploratory analysis on the data, as well as implementing time series models, we can now provide answers to the data science questions, and tell a complete data story about crops yield and price prediction. First, we look at the the yield of different kinds of crops in some big countries to have a sense of the situation, and we move on to focus on the yield of wheat in the US and its prediction. Then, since the price of the wheat in the US may be affected by many factors, the yield and amount of food use of wheat and their impacts will be considered when predicting the price of wheat in the US.
+
+#### 
+
+## Conclusions
+
+The trends are generally increasing for the yield of different crops in the big countries in this century, and the United States is one of the countries with the most increase. The US also has higher yield than other countries for almost all kinds of crops, including wheat.
+
+Then, let's look at the situations of the yield of wheat in the US. The general trend is going up for most of the time, increasing from 2.4 to 3.3 tonnes/hectare, and there is a big increase during 2016 to 2017. as there is also clear seasonality. Other basic plotting shows that the wheat data in USA is non random, non-stationary.
+
+The forecasting of the yield of wheat in the US was performed by both ARIMA models and deep learning models. ARIMA(1,1,0) was chosen by selecting the right parameters, and the comparison with benchmark methods shows that it has decent performance. Then the ARIMA model provides the forecast of the yield to be steadily increasing for the next two years. The deep learning models, RNN, GRU and LSTM are also implemented to forecast the yield. While all the ANN models are providing more detailed and accurate predictions than the ARIMA model, RNN and GRU are the better performing models on this task.
+
+The forecasting of the price of wheat in the US was performed by SARIMA and SARIMAX models. SARIMA(0,1,2,1,1,1,12) model was chosen by a similar approach, and after comparing with benchmark methods and doing seasonal cross validation, this model proves to be the best performing SARIMA model, and it forecasts the price of wheat to be at the same level for the next two years. The SARIMAX model was implemented by first binding the yield and food use of wheat, and then fitting the model using auto and manual approaches with cross validation. Finally, the forecast of the price was obtained using the individual forecasts of the yield and food use, and the fact that the forecast here is similar to the forecast of the SARIMA model proves that the yield and food use of wheat in the US are the important factors that can be used to predict the price.

@@ -1,0 +1,6 @@
+"0","cp = read.csv(""./HW2/crop_production.csv"")"
+"0","cp_usa = cp[cp$LOCATION==""USA"" & cp$MEASURE==""TONNE_HA"",]"
+"0","cp_usa = cp_usa[,-c(2,4,5,8)]"
+"0","h1 = head(cp_usa[cp_usa$SUBJECT==""RICE"",])"
+"0","h2 = head(cp_usa[cp_usa$SUBJECT==""WHEAT"",])"
+"0","knitr::kable(list(h1, h2), format=""html"", padding=3)"

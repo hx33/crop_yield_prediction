@@ -1,0 +1,3 @@
+"0","cp_countries = cp[cp$MEASURE==""TONNE_HA"" & (cp$LOCATION %in% c(""USA"",""CHN"",""IND"",""BRA"",""RUS"",""MEX"",""JPN"","""")), -c(2,4,5,8)]"
+"0","row.names(cp_countries) <- NULL"
+"0","head(cp_countries)"

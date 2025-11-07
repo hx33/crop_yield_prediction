@@ -1,0 +1,24 @@
+---
+title: "Introduction"
+---
+
+## Topic
+
+![Crop Yield](./External_Images/wheat_production.png)
+
+This project will study on world wide yield and its predictions, and then focus on the yield and price of wheat in the US. Yield is a measurement of the amount of crops grown and produced, including rice, wheat, beans, or even meat or milk. Each year, yields are determined by many factors, including locations or countries, crops types, land types, and climates. Many innovations and new techniques are making changes or improvements to yields, such as fertilizer, farming tools, crop varieties, etc. The yield of the crops then lead to other aspect of agriculture, including the amount of crops used for food, and the export and import quantities, as well as the selling price of the crops which is closely related to everyone.
+
+Food and crops are so important to us as it feeds our basic needs, and thus yields and price are necessary to study on, especially on the prediction of these variables. It not only enables farmers to see what their productions will be before harvest dates, but it also forecasts the food situation in the future. Specifically, this project will use time series models on the data of wheat in the US to perform yield and price predictions.
+
+### Data Science Questions
+
+1.  What are the general situations of the yields data of different crops (trends, seasonality etc.)?
+2.  How do the yields data of each type of crops differ among the countries?
+3.  What are the situations of the time series components (trends, seasonality etc.) of the yield of wheat in the US?
+4.  Forecast the wheat production in the US base on the previous data.
+5.  What are the performances of the models with the prediction of the yield?
+6.  What are the situations of the time series components (trends, seasonality etc.) of the price of wheat in the US?
+7.  What factors have impact on the price of the wheat?
+8.  How do these factors affect the price of the wheat?
+9.  Forecast the wheat price in the US base on the previous data and other factors.
+10. What is the situation of the stocks related to wheat in the US? What is the best model to study on the stocks?

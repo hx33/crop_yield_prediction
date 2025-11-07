@@ -1,0 +1,41 @@
+project:
+  type: website
+
+website:
+  title: "Time Series Project - Haiyu Xiao"
+  navbar:
+    left:
+      # - href: index.qmd
+      #   text: Home
+      - href: about.qmd
+        text: About Me
+      - href: introduction.qmd
+        text: Introduction
+      - href: data_sources.qmd
+        text: Data Sources
+      - href: data_visualization.qmd
+        text: Data Visualization
+      - href: eda.qmd
+        text: Exploratory Data Analysis
+      
+      - text: "Models"
+        menu:
+          - href: arma.qmd
+            text: ARMA/ARIMA/SARIMA Models
+          - href: arimax.qmd
+            text: ARIMAX/SARIMAX/VAR
+          - href: financial.qmd
+            text: Financial Time Series Models (ARCH/GARCH)
+          - href: deep_learning.qmd
+            text: Deep Learning for TS
+      - href: conclusions.qmd
+        text: Conclusions
+
+format:
+  html:
+    theme: flatly
+    code-fold: true
+    toc: true
+
+editor: visual
+

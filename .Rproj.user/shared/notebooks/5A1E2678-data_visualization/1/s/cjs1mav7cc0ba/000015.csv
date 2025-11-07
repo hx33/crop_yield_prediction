@@ -1,0 +1,4 @@
+"0","fig2 = cp_countries %>%"
+"0","  plot_ly(x=~LOCATION, y=~Value, frame=~TIME, color=~SUBJECT, type=""bar"")"
+"0",""
+"0","fig2 %>% layout(title = ""Yield of the 4 Crops in Each Country Since 1990"", xaxis = list(title='Year', showgrid=F), yaxis = list(title='Yield', showgrid=F))"
